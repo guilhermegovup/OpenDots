@@ -9,7 +9,7 @@ export function computerRoutes(computers: ComputerService) {
       {
         error:
           error instanceof z.ZodError
-            ? 'Invalid computer request.'
+            ? 'Requisição de computador inválida.'
             : error.message,
       },
       400,

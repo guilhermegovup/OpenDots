@@ -27,7 +27,8 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
     const parsed = setupInputSchema.safeParse(
       await c.req.json().catch(() => null),
     );
-    if (!parsed.success) return c.json({ error: 'Invalid setup event.' }, 400);
+    if (!parsed.success)
+      return c.json({ error: 'Evento de configuração inválido.' }, 400);
     const event = parsed.data;
     if (
       event.kind === 'step_viewed' &&
@@ -35,7 +36,13 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
       event.step !==
         (platform.setup().missing.length ? 'setup_required' : 'ready')
     )
-      return c.json({ error: 'Setup step does not match server state.' }, 400);
+      return c.json(
+        {
+          error:
+            'A etapa de configuração não corresponde ao estado do servidor.',
+        },
+        400,
+      );
     platform.setupTelemetry.capture(event);
     return c.json({ ok: true });
   });
@@ -58,7 +65,7 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
       .safeParse(await c.req.json());
     if (!data.success)
       return c.json(
-        { error: 'Enter a Space name (up to 60 characters).' },
+        { error: 'Informe um nome de Espaço (até 60 caracteres).' },
         400,
       );
     return c.json(
@@ -74,7 +81,7 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
       return c.json(
         {
           error:
-            'Provide a name, role instructions, and explicit tool permissions.',
+            'Informe um nome, as instruções de papel e permissões explícitas de ferramentas.',
         },
         400,
       );
@@ -89,7 +96,7 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
           error:
             error instanceof Error
               ? error.message
-              : 'Invalid Learning settings.',
+              : 'Configurações de aprendizado inválidas.',
         },
         400,
       );
@@ -111,9 +118,9 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
   app.put('/dots/:id', async (c) => {
     const data = dotSchema.safeParse(await c.req.json());
     if (!data.success)
-      return c.json({ error: 'Invalid specialist settings.' }, 400);
+      return c.json({ error: 'Configurações de especialista inválidas.' }, 400);
     const current = platform.workspace.dot(c.req.param('id'));
-    if (!current) return c.json({ error: 'Dot not found.' }, 404);
+    if (!current) return c.json({ error: 'Dot não encontrado.' }, 404);
     try {
       validateLearningSettings(
         data.data.learningContainerId === undefined
@@ -127,7 +134,7 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
           error:
             error instanceof Error
               ? error.message
-              : 'Invalid Learning settings.',
+              : 'Configurações de aprendizado inválidas.',
         },
         400,
       );
@@ -143,10 +150,15 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
       .strict()
       .safeParse(await c.req.json());
     if (!data.success)
-      return c.json({ error: 'Select a Dot and a conversation title.' }, 400);
+      return c.json(
+        { error: 'Selecione um Dot e um título para a conversa.' },
+        400,
+      );
     if (platform.setup().missing.length)
       return c.json(
-        { error: `Setup required: ${platform.setup().missing.join(', ')}.` },
+        {
+          error: `Configuração necessária: ${platform.setup().missing.join(', ')}.`,
+        },
         503,
       );
     return c.json(
@@ -164,7 +176,10 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
       .safeParse(await c.req.json());
     if (!data.success)
       return c.json(
-        { error: 'A conversation and audio SDP offer are required.' },
+        {
+          error:
+            'É necessário informar uma conversa e uma oferta SDP de áudio.',
+        },
         400,
       );
     return c.json(
@@ -189,7 +204,10 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
       .safeParse(await c.req.json());
     if (!data.success)
       return c.json(
-        { error: 'A bounded compute request and tool call ID are required.' },
+        {
+          error:
+            'É necessário um pedido de processamento com tamanho limitado e o ID da chamada de ferramenta.',
+        },
         400,
       );
     return c.json({
@@ -210,7 +228,7 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
       .safeParse(await c.req.json());
     if (!data.success)
       return c.json(
-        { error: 'Transcript exceeds the 20,000 character limit.' },
+        { error: 'A transcrição excede o limite de 20.000 caracteres.' },
         400,
       );
     platform.workspace.anchorCall(c.req.param('id'), data.data.anchorMessageId);
@@ -220,20 +238,14 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
   app.onError((error, c) => {
     const text = error.message;
     const known =
-      /^(Setup|Voice setup|Dot |Space |Specialist |Conversation |Call |This call|End the current|Voice provider|An audio|Intelligence could not)/.test(
+      /^(Setup|Voice setup|Dot |Space |Specialist |Conversation |Call |This call|End the current|Voice provider|An audio|Intelligence could not|Configuração necessária|Configuração de voz|O Dot |Dot especialista|Esta conversa|Chamada não|A sessão da chamada|A conexão da chamada|Esta chamada|Encerre a chamada|O provedor de voz|É necessária uma oferta|O Intelligence não|O acesso a Espaços)/.test(
         text,
       );
-    // A conversation, call or Dot the caller named that does not exist is a missing resource, not a
-    // server fault.
-    if (
-      /^(Dot not found|Call not found|Conversation does not belong)/.test(text)
-    )
-      return c.json({ error: text }, 404);
     return c.json(
       {
         error: known
           ? text
-          : 'The service request failed. Check the server configuration and try again.',
+          : 'A requisição ao serviço falhou. Verifique a configuração do servidor e tente novamente.',
       },
       503,
     );

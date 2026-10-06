@@ -29,7 +29,7 @@ export function SpaceNav({
           setError('');
         }
       } catch {
-        if (current) setError('Could not load pages.');
+        if (current) setError('Não foi possível carregar as páginas.');
       }
     };
     void load();
@@ -61,7 +61,7 @@ export function SpaceNav({
       <div className="space-nav-row">
         <button
           className="icon-button space-disclosure"
-          aria-label={`${expanded ? 'Collapse' : 'Expand'} ${space.name}`}
+          aria-label={`${expanded ? 'Recolher' : 'Expandir'} ${space.name}`}
           aria-expanded={expanded}
           aria-controls={`space-pages-${space.id}`}
           onClick={() => setExpanded(!expanded)}
@@ -90,7 +90,7 @@ export function SpaceNav({
             branches(null)
           )}
           {!error && !pages.length && (
-            <p className="sidebar-empty">No pages yet</p>
+            <p className="sidebar-empty">Nenhuma página ainda</p>
           )}
         </div>
       )}

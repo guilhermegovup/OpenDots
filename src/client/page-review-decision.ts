@@ -34,7 +34,7 @@ export async function decidePageReview(
   if (previous) {
     if (!matchesReviewedDraft(previous, args))
       throw new Error(
-        'This review was saved with a different draft. Start a new review for the changed draft.',
+        'Esta revisão foi salva com outro rascunho. Inicie uma nova revisão para o rascunho alterado.',
       );
     return previous;
   }

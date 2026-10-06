@@ -95,7 +95,7 @@ describe('API boundaries', () => {
       });
       expect(response.status).toBe(403);
       expect(await response.json()).toEqual({
-        error: 'Cross-origin requests are not allowed.',
+        error: 'Requisições de outra origem não são permitidas.',
       });
     },
   );
@@ -114,7 +114,7 @@ describe('API boundaries', () => {
     });
     expect(response.status).toBe(403);
     expect(await response.json()).toEqual({
-      error: 'Cross-site requests are not allowed.',
+      error: 'Requisições entre sites não são permitidas.',
     });
   });
   it('preserves exact matching for a single configured origin', async () => {
@@ -173,7 +173,7 @@ describe('API boundaries', () => {
       },
     });
     expect(response.status).toBe(403);
-    expect(await response.json()).toEqual({ error: 'Unrecognized host.' });
+    expect(await response.json()).toEqual({ error: 'Host não reconhecido.' });
   });
   it('does not widen access when an explicit origin list contains only blank entries', async () => {
     const { app } = fixture(undefined, resolveAppOrigins(' , ', 'development'));

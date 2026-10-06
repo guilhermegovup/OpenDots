@@ -14,7 +14,7 @@ export function pageRoutes(platform: Platform) {
     if (!receipt) return c.json(null);
     if (!platform.workspace.canAccessSpace(thread.dotId, receipt.spaceId))
       return c.json(
-        { error: 'This Dot no longer has access to the selected Space.' },
+        { error: 'Este Dot não tem mais acesso ao Espaço selecionado.' },
         403,
       );
     return c.json({
@@ -27,11 +27,11 @@ export function pageRoutes(platform: Platform) {
       .extend({ toolCallId: z.string().min(1).max(200) })
       .safeParse(await c.req.json());
     if (!data.success)
-      return c.json({ error: 'Enter a valid page draft.' }, 400);
+      return c.json({ error: 'Informe um rascunho de página válido.' }, 400);
     const thread = platform.workspace.requireThread(c.req.param('id'));
     if (!platform.workspace.canAccessSpace(thread.dotId, data.data.spaceId))
       return c.json(
-        { error: 'This Dot no longer has access to the selected Space.' },
+        { error: 'Este Dot não tem mais acesso ao Espaço selecionado.' },
         403,
       );
     const { spaceId, toolCallId, ...draft } = data.data;
@@ -69,7 +69,7 @@ export function pageRoutes(platform: Platform) {
       return c.json(
         {
           error:
-            'Enter a title (160 characters max) and Markdown content (100,000 max).',
+            'Informe um título (máx. 160 caracteres) e conteúdo em Markdown (máx. 100.000).',
         },
         400,
       );
@@ -82,7 +82,9 @@ export function pageRoutes(platform: Platform) {
     const data = pagePatch.safeParse(await c.req.json());
     if (!data.success)
       return c.json(
-        { error: 'A valid page patch and expectedRevision are required.' },
+        {
+          error: 'É necessário um patch de página válido e o expectedRevision.',
+        },
         400,
       );
     return c.json(
@@ -98,7 +100,8 @@ export function pageRoutes(platform: Platform) {
       .object({ dotId: z.string().min(1) })
       .strict()
       .safeParse(await c.req.json());
-    if (!data.success) return c.json({ error: 'Choose a specialist.' }, 400);
+    if (!data.success)
+      return c.json({ error: 'Escolha um especialista.' }, 400);
     return c.json(
       await platform.pages.conversation(
         c.req.param('spaceId'),
@@ -116,7 +119,10 @@ export function pageRoutes(platform: Platform) {
       .strict()
       .safeParse(await c.req.json());
     if (!data.success)
-      return c.json({ error: 'Enter a valid page title and parent.' }, 400);
+      return c.json(
+        { error: 'Informe um título de página e uma página-mãe válidos.' },
+        400,
+      );
     return c.json(
       await platform.pages.saveConversation(
         c.req.param('id'),
@@ -128,16 +134,16 @@ export function pageRoutes(platform: Platform) {
   });
   app.onError((error, c) =>
     error instanceof SyntaxError
-      ? c.json({ error: 'Invalid JSON request.' }, 400)
+      ? c.json({ error: 'Requisição JSON inválida.' }, 400)
       : error instanceof PageError
         ? c.json({ error: error.message }, error.status)
         : error.message ===
-            'Conversation does not belong to this Dot and owner.'
+            'Esta conversa não pertence a este Dot e proprietário.'
           ? c.json({ error: error.message }, 404)
           : c.json(
               {
                 error:
-                  'Page operation could not complete. Check Intelligence setup or retry; your draft has not been discarded.',
+                  'Não foi possível concluir a operação na página. Verifique a configuração do Intelligence ou tente novamente; seu rascunho não foi descartado.',
               },
               503,
             ),

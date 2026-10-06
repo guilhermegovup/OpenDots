@@ -30,8 +30,8 @@ it('offers pause for a completed task waiting on its next scheduled run', () => 
       onSchedule={() => {}}
     />,
   );
-  expect(html).toContain('Pause schedule');
-  expect(html).toContain('Edit schedule');
+  expect(html).toContain('Pausar agendamento');
+  expect(html).toContain('Editar agendamento');
 });
 it('offers resume for a paused task without claiming to be running', () => {
   const html = renderToStaticMarkup(
@@ -43,8 +43,8 @@ it('offers resume for a paused task without claiming to be running', () => {
       onSchedule={() => {}}
     />,
   );
-  expect(html).toContain('Resume task');
-  expect(html).not.toContain('Pause schedule');
+  expect(html).toContain('Retomar tarefa');
+  expect(html).not.toContain('Pausar agendamento');
 });
 it('labels an interrupted task for owner review before retry', () => {
   const html = renderToStaticMarkup(
@@ -56,6 +56,6 @@ it('labels an interrupted task for owner review before retry', () => {
       onSchedule={() => {}}
     />,
   );
-  expect(html).toContain('Retry after review');
-  expect(html).not.toContain('Pause task');
+  expect(html).toContain('Tentar novamente após revisão');
+  expect(html).not.toContain('Pausar tarefa');
 });

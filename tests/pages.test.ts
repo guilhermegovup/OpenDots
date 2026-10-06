@@ -47,7 +47,7 @@ it('rejects cross-space parents, cycles and stale writes without losing content'
   store.pages.update(a, root.id, { expectedRevision: 1, content: 'New' });
   expect(() =>
     store.pages.update(a, root.id, { expectedRevision: 1, content: 'Stale' }),
-  ).toThrow(/changed/);
+  ).toThrow(/mudou/);
   expect(store.pages.get(a, root.id).content).toBe('New');
   expect(() => store.pages.get(b, root.id)).toThrow();
   store.close();
@@ -93,7 +93,7 @@ it('migrates review receipts and retains their original draft after restart', ()
       'thread',
       'call',
     ),
-  ).toThrow('different draft');
+  ).toThrow('rascunho diferente');
   expect(
     store.pages.reviewReceipt('earlier-thread', 'earlier-call')?.draft,
   ).toBeNull();

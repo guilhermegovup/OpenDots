@@ -101,7 +101,7 @@ it('defaults an absent operation to created and reports pause without subscribin
     thread: f.thread,
     message: { ...message, operation: undefined },
   });
-  expect(f.thread.post).toHaveBeenCalledWith(expect.stringMatching(/paused/i));
+  expect(f.thread.post).toHaveBeenCalledWith(expect.stringMatching(/pausado/i));
   expect(f.thread.subscribe).not.toHaveBeenCalled();
   expect(f.thread.runAgent).not.toHaveBeenCalled();
 });

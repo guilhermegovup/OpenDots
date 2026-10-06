@@ -90,7 +90,7 @@ export class Store {
           this.invalidate(
             task,
             'interrupted',
-            'Run interrupted because settings changed. Review completed effects before retrying.',
+            'Execução interrompida porque as configurações mudaram. Revise o que já foi feito antes de tentar de novo.',
           );
         }
       }
@@ -115,7 +115,7 @@ export class Store {
         "INSERT INTO tasks VALUES (?, ?, 'queued', ?, NULL, ?, ?, NULL, NULL, NULL)",
       )
       .run(id, prompt, intervalSeconds, now, now);
-    this.event(id, null, 'Task added to the queue.');
+    this.event(id, null, 'Tarefa adicionada à fila.');
     return this.task(id)!;
   }
   detail(id: string): Detail | undefined {
@@ -175,7 +175,11 @@ export class Store {
       this.invalidate(
         task,
         status,
-        action === 'run' ? 'Task queued for a new run.' : `Task ${status}.`,
+        action === 'run'
+          ? 'Tarefa na fila para uma nova execução.'
+          : status === 'paused'
+            ? 'Tarefa pausada.'
+            : 'Tarefa cancelada.',
       );
       this.db
         .prepare('UPDATE tasks SET error=NULL, nextRunAt=NULL WHERE id=?')
@@ -199,8 +203,8 @@ export class Store {
       id,
       null,
       intervalSeconds
-        ? `Repeats every ${intervalSeconds / 60} minutes after a successful run.`
-        : 'Repeat schedule removed.',
+        ? `Repete a cada ${intervalSeconds / 60} minutos após uma execução bem-sucedida.`
+        : 'Agendamento de repetição removido.',
     );
     return this.task(id);
   }
@@ -215,7 +219,7 @@ export class Store {
         this.invalidate(
           task,
           'interrupted',
-          'Worker lease expired. Review completed effects before retrying.',
+          'A reserva do worker expirou. Revise o que já foi feito antes de tentar de novo.',
         );
       const task = this.db
         .prepare(
@@ -234,7 +238,7 @@ export class Store {
           "INSERT INTO runs VALUES (?, ?, 'running', ?, NULL, NULL, NULL)",
         )
         .run(lease, task.id, now);
-      this.event(task.id, lease, 'Run started.');
+      this.event(task.id, lease, 'Execução iniciada.');
       return { ...this.task(task.id)!, lease };
     });
   }
@@ -263,7 +267,9 @@ export class Store {
       this.event(
         claim.id,
         claim.lease,
-        result.sample ? 'Fictional sample brief ready.' : 'Run completed.',
+        result.sample
+          ? 'Resumo de exemplo fictício pronto.'
+          : 'Execução concluída.',
       );
       return true;
     });

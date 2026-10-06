@@ -76,9 +76,9 @@ const runner = new Runner(
     const threadId = workspace.taskThread(claim.id);
     if (!threadId)
       throw new Error(
-        'This legacy task has no Intelligence conversation. Create a new scheduled task from a conversation.',
+        'Esta tarefa antiga não tem uma conversa no Intelligence. Crie uma nova tarefa agendada a partir de uma conversa.',
       );
-    progress('Running this task in its Intelligence conversation.');
+    progress('Executando esta tarefa na conversa dela no Intelligence.');
     const text = await platform.turn(threadId, claim.prompt, signal, {
       opendotsSource: 'scheduled_task',
     });
@@ -105,7 +105,7 @@ app.use('*', async (c, next) => {
   );
   await next();
 });
-app.get('/api/*', (c) => c.json({ error: 'Not found.' }, 404));
+app.get('/api/*', (c) => c.json({ error: 'Não encontrado.' }, 404));
 app.use('/*', serveStatic({ root: './dist/client' }));
 app.get('*', serveStatic({ path: './dist/client/index.html' }));
 const server = serve({ fetch: app.fetch, hostname: host, port }, (info) => {

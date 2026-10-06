@@ -23,7 +23,7 @@ async function bounded<T>(operation: Promise<T>): Promise<T> {
           () =>
             reject(
               new Error(
-                'Intelligence request timed out. Retry to recover the same conversation.',
+                'A requisição ao Intelligence expirou. Tente novamente para recuperar a mesma conversa.',
               ),
             ),
           30000,
@@ -48,7 +48,7 @@ export class PageService {
     const dot = this.workspace.dot(dotId);
     if (!dot || !this.workspace.canAccessSpace(dotId, spaceId))
       throw new PageError(
-        'Choose a specialist in this Space with access enabled.',
+        'Escolha um especialista deste Espaço com acesso habilitado.',
         400,
       );
     const key = `${pageId}:${dotId}`;
@@ -62,7 +62,7 @@ export class PageService {
       const candidateId = randomUUID();
       if (!this.workspace.pages.reserveThread(pageId, dotId, candidateId))
         throw new PageError(
-          'This page conversation is being created. Retry shortly.',
+          'A conversa desta página está sendo criada. Tente novamente em instantes.',
           409,
         );
       const threadId = this.workspace.pages.thread(pageId, dotId)!.threadId;
@@ -76,7 +76,7 @@ export class PageService {
           }),
         );
         if (!this.workspace.canAccessSpace(dotId, spaceId))
-          throw new PageError('Space access has been revoked.');
+          throw new PageError('O acesso ao Espaço foi revogado.');
         const thread =
           this.workspace.conversations().find((t) => t.id === threadId) ??
           this.workspace.bindThread(threadId, dotId, page.title);
@@ -125,19 +125,21 @@ export class PageService {
           .join('\n');
       }
       if (text.trim())
-        chunks.push(`## ${message.role === 'user' ? 'You' : 'Dot'}\n\n${text}`);
+        chunks.push(
+          `## ${message.role === 'user' ? 'Você' : 'Dot'}\n\n${text}`,
+        );
     }
     const content = chunks.join('\n\n');
     if (!content)
-      throw new PageError('This conversation has no persisted text to save.');
+      throw new PageError('Esta conversa não tem texto salvo para guardar.');
     if (content.length > 100000)
       throw new PageError(
-        'This conversation exceeds the 100,000 character page limit. Save a shorter conversation.',
+        'Esta conversa excede o limite de 100.000 caracteres por página. Salve uma conversa mais curta.',
       );
     const destination =
       this.workspace.pages.forThread(threadId)?.spaceId ?? dot.spaceId;
     if (!this.workspace.canAccessSpace(dot.id, destination))
-      throw new PageError('Space access has been revoked.', 400);
+      throw new PageError('O acesso ao Espaço foi revogado.', 400);
     return this.workspace.pages.create(
       destination,
       { title, content, parentId },

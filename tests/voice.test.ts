@@ -90,7 +90,7 @@ it('binds voice history and compute to the existing thread, deduplicates tools a
     { opendotsSource: 'voice_receipt' },
   );
   await expect(f.voice.compute(call.id, 'late', 'Research')).rejects.toThrow(
-    'ended',
+    'encerrada',
   );
 });
 it('rejects unowned threads before provider contact and expires unactivated peers', async () => {
@@ -139,7 +139,7 @@ it('hangs up a provisioned peer whose SDP is invalid', async () => {
   );
   await expect(
     f.voice.begin('thread', offer, new AbortController().signal),
-  ).rejects.toThrow('invalid SDP');
+  ).rejects.toThrow('SDP inválido');
   expect(
     f.transport.mock.calls.some(([url]) =>
       String(url).endsWith('/rtc_test/hangup'),
@@ -179,9 +179,7 @@ it('defers paused transcript synchronization and resumes it once without a dupli
   expect(f.workspace.call(call.id).transcript).toBe(
     'Speech saved while paused',
   );
-  expect(f.workspace.call(call.id).error).toContain(
-    'pending Intelligence sync',
-  );
+  expect(f.workspace.call(call.id).error).toContain('fica pendente');
   f.store.updateSettings({ paused: false });
   await f.voice.resumePending();
   await f.voice.resumePending();
@@ -281,7 +279,7 @@ it('counts failed compute attempts toward the six-turn limit', async () => {
     ).rejects.toThrow('Provider unavailable');
   }
   await expect(f.voice.compute(call.id, 'success', 'Research')).rejects.toThrow(
-    'six compute-turn limit',
+    'limite de seis turnos',
   );
   expect(f.turn).toHaveBeenCalledTimes(6);
   await f.voice.end(call.id, '');
@@ -301,7 +299,7 @@ it('counts a retry of the same tool ID as another attempt', async () => {
     );
   }
   await expect(f.voice.compute(call.id, 'same', 'Research')).rejects.toThrow(
-    'six compute-turn limit',
+    'limite de seis turnos',
   );
   expect(f.turn).toHaveBeenCalledTimes(6);
   await f.voice.end(call.id, '');
@@ -324,7 +322,7 @@ it('keeps successful compute turns cached and enforces the six-turn cap', async 
   );
   expect(f.turn).toHaveBeenCalledTimes(6);
   await expect(f.voice.compute(call.id, 'extra', 'Research')).rejects.toThrow(
-    'six compute-turn limit',
+    'limite de seis turnos',
   );
   await f.voice.end(call.id, '');
 });

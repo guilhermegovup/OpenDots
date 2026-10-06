@@ -114,7 +114,7 @@ it('ends the call after three consecutive failed control polls', async () => {
   });
   expect(ends()).toHaveLength(1);
   expect(voice.status).toBe('idle');
-  expect(voice.error).toBe('Call control connection was lost.');
+  expect(voice.error).toBe('A conexão de controle da chamada foi perdida.');
 });
 it('ends a persistently failing control poll exactly once', async () => {
   failPolls(10);

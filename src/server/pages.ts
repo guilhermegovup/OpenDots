@@ -71,7 +71,7 @@ export class Pages {
   }
   requireSpace(spaceId: string) {
     if (!this.spaceExists(spaceId))
-      throw new PageError('Space not found.', 404);
+      throw new PageError('Espaço não encontrado.', 404);
   }
   list(spaceId: string): Page[] {
     this.requireSpace(spaceId);
@@ -84,7 +84,7 @@ export class Pages {
     const row = this.db
       .prepare('SELECT * FROM pages WHERE id=? AND spaceId=?')
       .get(id, spaceId);
-    if (!row) throw new PageError('Page not found in this Space.', 404);
+    if (!row) throw new PageError('Página não encontrada neste Espaço.', 404);
     return row as unknown as Page;
   }
   private parent(spaceId: string, parentId: string | null, id?: string) {
@@ -93,7 +93,7 @@ export class Pages {
     while (cursor) {
       if (seen.has(cursor))
         throw new PageError(
-          'A page cannot be moved into itself or a descendant.',
+          'Uma página não pode ser movida para dentro dela mesma ou de uma subpágina.',
         );
       seen.add(cursor);
       cursor = this.get(spaceId, cursor).parentId;
@@ -108,7 +108,7 @@ export class Pages {
     const parsed = pageInput.safeParse(input);
     if (!parsed.success)
       throw new PageError(
-        'Pages require a title up to 160 characters and content up to 100,000 characters.',
+        'Páginas exigem um título de até 160 caracteres e conteúdo de até 100.000 caracteres.',
       );
     const data = parsed.data;
     this.parent(spaceId, data.parentId);
@@ -160,7 +160,7 @@ export class Pages {
       if (previous) {
         if (previous.spaceId !== spaceId)
           throw new PageError(
-            'This review was already saved to another Space.',
+            'Esta revisão já foi salva em outro Espaço.',
             409,
           );
         if (
@@ -169,7 +169,7 @@ export class Pages {
             previous.draft.content !== draft.content)
         )
           throw new PageError(
-            'This review was already saved with a different draft. Start a new review for the changed draft.',
+            'Esta revisão já foi salva com um rascunho diferente. Inicie uma nova revisão para o rascunho alterado.',
             409,
           );
         const page = this.get(spaceId, previous.pageId);
@@ -197,7 +197,7 @@ export class Pages {
     const parsed = pagePatch.safeParse(input);
     if (!parsed.success)
       throw new PageError(
-        'A valid page patch and expectedRevision are required.',
+        'É necessário um patch de página válido e o expectedRevision.',
       );
     const data = parsed.data;
     this.db.exec('BEGIN IMMEDIATE');
@@ -205,7 +205,7 @@ export class Pages {
       const page = this.get(spaceId, id);
       if (page.revision !== data.expectedRevision)
         throw new PageError(
-          'This page changed. Reload the latest revision before saving your draft.',
+          'Esta página mudou. Recarregue a versão mais recente antes de salvar seu rascunho.',
           409,
         );
       const parent =

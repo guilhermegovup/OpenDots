@@ -62,13 +62,13 @@ export class WorkspaceStore {
       this.db.exec('ALTER TABLE calls ADD COLUMN anchorMessageId TEXT');
     if (!this.spaces().length) {
       const space = this.createSpace(
-        'Everyday',
-        'A little space for your day.',
+        'Dia a dia',
+        'Um cantinho para o seu dia.',
       );
       this.createDot(
         space.id,
         'Dot',
-        'Be thoughtful, practical, and concise. Help the user think clearly and follow through.',
+        'Seja atencioso, prático e conciso. Ajude o usuário a pensar com clareza e a levar as coisas até o fim. Responda sempre em português do Brasil.',
         true,
         true,
       );
@@ -174,7 +174,9 @@ export class WorkspaceStore {
       !spaceIds.includes(defaultSpace) ||
       spaceIds.some((id) => !this.spaces().some((space) => space.id === id))
     )
-      throw new Error('Space access must include a valid default destination.');
+      throw new Error(
+        'O acesso a Espaços deve incluir um destino padrão válido.',
+      );
   }
   updateDot(
     id: string,
@@ -189,7 +191,7 @@ export class WorkspaceStore {
     },
   ): Dot {
     const current = this.dot(id);
-    if (!current) throw new Error('Dot not found.');
+    if (!current) throw new Error('Dot não encontrado.');
     const defaultSpace = patch.spaceId ?? current.spaceId;
     const spaceIds = patch.spaceIds ?? current.spaceIds;
     this.validateSpaceAccess(defaultSpace, spaceIds);
@@ -237,7 +239,7 @@ export class WorkspaceStore {
   }
   bindThread(id: string, dotId: string, title: string): Conversation {
     const dot = this.dot(dotId);
-    if (!dot) throw new Error('Dot not found.');
+    if (!dot) throw new Error('Dot não encontrado.');
     const value: Conversation = {
       id,
       dotId,
@@ -263,7 +265,7 @@ export class WorkspaceStore {
   requireThread(id: string, dotId?: string): Conversation {
     const thread = this.conversations().find((thread) => thread.id === id);
     if (!thread || (dotId && thread.dotId !== dotId))
-      throw new Error('Conversation does not belong to this Dot and owner.');
+      throw new Error('Esta conversa não pertence a este Dot e proprietário.');
     return thread;
   }
   bindTask(taskId: string, threadId: string) {
@@ -306,7 +308,7 @@ export class WorkspaceStore {
   }
   call(id: string): CallReceipt {
     const call = this.calls().find((call) => call.id === id);
-    if (!call) throw new Error('Call not found.');
+    if (!call) throw new Error('Chamada não encontrada.');
     this.requireThread(call.threadId);
     return call;
   }

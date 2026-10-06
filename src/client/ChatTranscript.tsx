@@ -24,10 +24,10 @@ function Receipt({ call }: { call: CallReceipt }) {
       <PhoneOff size={13} />
       <span>
         {call.status === 'failed'
-          ? 'Call failed'
+          ? 'Chamada falhou'
           : call.endedAt
-            ? `${Math.round((call.endedAt - call.startedAt) / 1000)}s · Call ended`
-            : 'Call in progress'}
+            ? `${Math.round((call.endedAt - call.startedAt) / 1000)}s · Chamada encerrada`
+            : 'Chamada em andamento'}
       </span>
       {call.error && <small>{call.error}</small>}
     </div>
@@ -59,7 +59,7 @@ export function ChatTranscript({
               className={`chat-bubble ${message.role}${isScheduledTaskMessage(message) ? ' scheduled' : ''}`}
             >
               {isScheduledTaskMessage(message) && (
-                <span className="scheduled-message-label">Scheduled</span>
+                <span className="scheduled-message-label">Agendado</span>
               )}
               <ReactMarkdown
                 components={{

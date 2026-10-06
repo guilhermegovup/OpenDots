@@ -36,7 +36,7 @@ export async function api<T>(
   };
   if (!response.ok)
     throw new ApiError(
-      data.error ?? `Request failed (${response.status}).`,
+      data.error ?? `A solicitação falhou (${response.status}).`,
       response.status,
     );
   return data as T;

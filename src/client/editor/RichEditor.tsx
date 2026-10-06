@@ -35,7 +35,7 @@ export default function RichEditor({
       ...documentExtensions(),
       Markdown,
       Placeholder.configure({
-        placeholder: 'Start writing, or type / for blocks…',
+        placeholder: 'Comece a escrever ou digite / para blocos…',
       }),
       SlashCommands,
     ],
@@ -45,7 +45,7 @@ export default function RichEditor({
     editorProps: {
       attributes: {
         class: 'document-prose',
-        'aria-label': 'Page content',
+        'aria-label': 'Conteúdo da página',
         role: 'textbox',
         'aria-multiline': 'true',
       },
@@ -68,7 +68,7 @@ export default function RichEditor({
         if (/<(img|iframe|script)\b/i.test(html)) {
           event.preventDefault();
           notice.current(
-            'Images and embedded content are not supported here. Use Markdown source to keep their original markup.',
+            'Imagens e conteúdo incorporado não são suportados aqui. Use o código Markdown para manter a marcação original.',
           );
           return true;
         }
@@ -106,25 +106,25 @@ export default function RichEditor({
       });
     }
   }, [editor, value]);
-  if (!editor) return <div className="editor-loading">Loading editor…</div>;
+  if (!editor) return <div className="editor-loading">Carregando editor…</div>;
   return (
     <>
       <div
         className="format-toolbar"
         role="toolbar"
-        aria-label="Text formatting"
+        aria-label="Formatação de texto"
       >
         <button
-          title="Bold (⌘/Ctrl B)"
-          aria-label="Bold"
+          title="Negrito (⌘/Ctrl B)"
+          aria-label="Negrito"
           aria-pressed={state?.bold}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <Bold size={16} />
         </button>
         <button
-          title="Italic (⌘/Ctrl I)"
-          aria-label="Italic"
+          title="Itálico (⌘/Ctrl I)"
+          aria-label="Itálico"
           aria-pressed={state?.italic}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
@@ -132,43 +132,43 @@ export default function RichEditor({
         </button>
         <span className="toolbar-divider" />
         <button
-          title="Bullet list"
-          aria-label="Bullet list"
+          title="Lista com marcadores"
+          aria-label="Lista com marcadores"
           aria-pressed={state?.bullet}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
           <List size={17} />
         </button>
         <button
-          title="Numbered list"
-          aria-label="Numbered list"
+          title="Lista numerada"
+          aria-label="Lista numerada"
           aria-pressed={state?.ordered}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
           <ListOrdered size={17} />
         </button>
         <button
-          title="Quote"
-          aria-label="Quote"
+          title="Citação"
+          aria-label="Citação"
           aria-pressed={state?.quote}
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
         >
           <Quote size={15} />
         </button>
         <button
-          title="Code block"
-          aria-label="Code block"
+          title="Bloco de código"
+          aria-label="Bloco de código"
           aria-pressed={state?.code}
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         >
           <Code2 size={17} />
         </button>
         <button
-          title="Add link"
-          aria-label="Add link"
+          title="Adicionar link"
+          aria-label="Adicionar link"
           onClick={() => {
             const url = window.prompt(
-              'Link URL (https:// or an internal page link)',
+              'URL do link (https:// ou link para uma página interna)',
               editor.getAttributes('link').href ?? '',
             );
             if (url === null) return;
@@ -177,7 +177,7 @@ export default function RichEditor({
               return;
             }
             if (!/^(https?:\/\/|\/#\/spaces\/)/i.test(url)) {
-              onNotice('Use a public http(s) URL or an internal page link.');
+              onNotice('Use uma URL pública http(s) ou um link para uma página interna.');
               return;
             }
             editor
@@ -192,16 +192,16 @@ export default function RichEditor({
         </button>
         <span className="toolbar-divider" />
         <button
-          aria-label="Undo"
-          title="Undo"
+          aria-label="Desfazer"
+          title="Desfazer"
           disabled={!state?.undo}
           onClick={() => editor.chain().focus().undo().run()}
         >
           <Undo2 size={16} />
         </button>
         <button
-          aria-label="Redo"
-          title="Redo"
+          aria-label="Refazer"
+          title="Refazer"
           disabled={!state?.redo}
           onClick={() => editor.chain().focus().redo().run()}
         >
@@ -210,7 +210,7 @@ export default function RichEditor({
       </div>
       <EditorContent editor={editor} />
       <p className="editor-hint">
-        Type <kbd>/</kbd> for blocks · ⌘/Ctrl + S to save
+        Digite <kbd>/</kbd> para blocos · ⌘/Ctrl + S para salvar
       </p>
     </>
   );

@@ -15,7 +15,7 @@ export function pageExcerpt(content: string) {
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
     .replace(/<[^>]+>/g, ' ')
     .replace(/^\s*(?:[-+*]|\d+[.)])\s+(?:\[[ xX]\]\s+)?/gm, '')
-    .replace(/```[\s\S]*?```/g, 'Code block')
+    .replace(/```[\s\S]*?```/g, 'Bloco de código')
     .replace(/!?\[([^\]]+)\]\([^)]*\)/g, '$1')
     .replace(/[#>*_`|~]/g, '')
     .replace(/\s+/g, ' ')
@@ -54,53 +54,53 @@ export function SpaceLibrary({
   return (
     <section
       className="space-library"
-      aria-label={`${space.name} page library`}
+      aria-label={`Biblioteca de páginas de ${space.name}`}
     >
       <header className="library-heading">
         <div>
-          <span className="library-eyebrow">SPACE</span>
+          <span className="library-eyebrow">ESPAÇO</span>
           <h1>{space.name}</h1>
           {space.description && <p>{space.description}</p>}
         </div>
         <button className="document-primary" onClick={onNew}>
-          <Plus size={17} /> New page
+          <Plus size={17} /> Nova página
         </button>
       </header>
       <div className="library-tools">
         <label className="library-search">
           <Search size={17} />
           <input
-            aria-label="Search pages"
-            placeholder="Search pages"
+            aria-label="Buscar páginas"
+            placeholder="Buscar páginas"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </label>
         <label className="library-sort">
-          <span className="sr-only">Sort pages</span>
+          <span className="sr-only">Ordenar páginas</span>
           <select
-            aria-label="Sort pages"
+            aria-label="Ordenar páginas"
             value={sort}
             onChange={(e) => setSort(e.target.value)}
           >
-            <option value="recent">Recently edited</option>
-            <option value="name">Name A–Z</option>
+            <option value="recent">Editadas recentemente</option>
+            <option value="name">Nome A–Z</option>
           </select>
         </label>
         <div
           className="library-view-toggle"
           role="group"
-          aria-label="Library view"
+          aria-label="Visualização da biblioteca"
         >
           <button
-            aria-label="Grid view"
+            aria-label="Visualização em grade"
             aria-pressed={layout === 'grid'}
             onClick={() => setLayout('grid')}
           >
             <LayoutGrid size={17} />
           </button>
           <button
-            aria-label="List view"
+            aria-label="Visualização em lista"
             aria-pressed={layout === 'list'}
             onClick={() => setLayout('list')}
           >
@@ -109,9 +109,9 @@ export function SpaceLibrary({
         </div>
       </div>
       <div className="library-section-label">
-        <h2>{query ? 'Search results' : 'All pages'}</h2>
+        <h2>{query ? 'Resultados da busca' : 'Todas as páginas'}</h2>
         <span>
-          {filtered.length} {filtered.length === 1 ? 'page' : 'pages'}
+          {filtered.length} {filtered.length === 1 ? 'página' : 'páginas'}
         </span>
       </div>
       {filtered.length ? (
@@ -129,11 +129,11 @@ export function SpaceLibrary({
                 <h3>{page.title}</h3>
                 <p>
                   {pageExcerpt(page.content) ||
-                    'An empty page, ready to write.'}
+                    'Uma página vazia, pronta para escrever.'}
                 </p>
                 <div className="library-page-meta">
                   <span title={new Date(page.updatedAt).toLocaleString()}>
-                    Edited{' '}
+                    Editada em{' '}
                     {new Date(page.updatedAt).toLocaleDateString(undefined, {
                       month: 'short',
                       day: 'numeric',
@@ -156,15 +156,15 @@ export function SpaceLibrary({
       ) : (
         <div className="library-empty">
           <FileText size={30} strokeWidth={1.3} />
-          <h2>{query ? 'No matching pages' : 'No pages yet'}</h2>
+          <h2>{query ? 'Nenhuma página encontrada' : 'Nenhuma página ainda'}</h2>
           <p>
             {query
-              ? 'Try a different title or phrase.'
-              : 'Create your first page to start organizing this Space.'}
+              ? 'Tente outro título ou frase.'
+              : 'Crie sua primeira página para começar a organizar este Espaço.'}
           </p>
           {!query && (
             <button className="document-primary" onClick={onNew}>
-              <Plus size={16} /> New page
+              <Plus size={16} /> Nova página
             </button>
           )}
         </div>

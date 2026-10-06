@@ -19,7 +19,7 @@ export function TaskActions({
       {active ? (
         <button disabled={busy} onClick={() => onAction('pause')}>
           <Pause size={14} />
-          Pause task
+          Pausar tarefa
         </button>
       ) : (
         <button
@@ -28,23 +28,23 @@ export function TaskActions({
         >
           <Play size={14} />
           {task.status === 'interrupted'
-            ? 'Retry after review'
+            ? 'Tentar novamente após revisão'
             : task.status === 'failed'
-              ? 'Retry task'
+              ? 'Tentar tarefa novamente'
               : task.status === 'paused'
-                ? 'Resume task'
-                : 'Run again'}
+                ? 'Retomar tarefa'
+                : 'Executar novamente'}
         </button>
       )}
       {task.status === 'completed' && !!task.intervalSeconds && (
         <button disabled={busy} onClick={() => onAction('pause')}>
           <Pause size={14} />
-          Pause schedule
+          Pausar agendamento
         </button>
       )}
       <button onClick={onSchedule}>
         <Clock3 size={14} />
-        {task.intervalSeconds ? 'Edit schedule' : 'Set a schedule'}
+        {task.intervalSeconds ? 'Editar agendamento' : 'Definir agendamento'}
       </button>
       {task.status !== 'cancelled' && (
         <button
@@ -53,7 +53,7 @@ export function TaskActions({
           onClick={() => onAction('cancel')}
         >
           <Square size={12} />
-          Cancel
+          Cancelar
         </button>
       )}
     </div>

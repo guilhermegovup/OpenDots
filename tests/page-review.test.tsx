@@ -72,7 +72,7 @@ it('rejects a changed restored draft before sending a decision or another save',
   ]) {
     await expect(
       decidePageReview('thread', 'call', changed, true),
-    ).rejects.toThrow('different draft');
+    ).rejects.toThrow('outro rascunho');
   }
   expect(
     vi.mocked(api).mock.calls.filter((call) => call[1] === 'POST'),
@@ -90,10 +90,10 @@ it('hides decisions and unsaved claims until the persisted receipt is checked', 
       onSaved={() => {}}
     />,
   );
-  expect(html).toContain('Checking whether this draft was already saved.');
-  expect(html).not.toContain('Decline');
-  expect(html).not.toContain('Approve &amp; save');
-  expect(html).not.toContain('Nothing is saved');
+  expect(html).toContain('Verificando se este rascunho já foi salvo.');
+  expect(html).not.toContain('Recusar');
+  expect(html).not.toContain('Aprovar e salvar');
+  expect(html).not.toContain('Nada é salvo');
 });
 
 it('does not claim a canceled or declined review was unsaved before recovering its receipt', () => {
@@ -112,9 +112,9 @@ it('does not claim a canceled or declined review was unsaved before recovering i
         onSaved={() => {}}
       />,
     );
-    expect(html).toContain('Checking whether this draft was already saved.');
-    expect(html).not.toContain('No page was saved.');
-    expect(html).not.toContain('Decline');
+    expect(html).toContain('Verificando se este rascunho já foi salvo.');
+    expect(html).not.toContain('Nenhuma página foi salva.');
+    expect(html).not.toContain('Recusar');
   }
 });
 

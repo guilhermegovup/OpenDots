@@ -32,19 +32,19 @@ export function PageOutline({
         </li>
       ));
   return (
-    <nav className="document-outline" aria-label="Pages in this Space">
+    <nav className="document-outline" aria-label="Páginas neste Espaço">
       <div>
-        <strong>Pages</strong>
+        <strong>Páginas</strong>
         <button
           className="document-icon"
-          aria-label="New page in outline"
+          aria-label="Nova página na estrutura"
           onClick={onNew}
         >
           <Plus size={16} />
         </button>
         <button
           className="document-icon"
-          aria-label="Close page outline"
+          aria-label="Fechar estrutura da página"
           onClick={onClose}
         >
           <X size={16} />

@@ -120,7 +120,7 @@ export class Platform {
     const missing = this.setup().missing;
     if (missing.length)
       throw new Error(
-        `Setup required: ${missing.join(', ')}. Conversations require CopilotKit Intelligence.`,
+        `Configuração necessária: ${missing.join(', ')}. As conversas exigem o CopilotKit Intelligence.`,
       );
   }
   async start() {
@@ -146,7 +146,7 @@ export class Platform {
   }
   async createConversation(dotId: string, title: string) {
     this.requireReady();
-    if (!this.workspace.dot(dotId)) throw new Error('Dot not found.');
+    if (!this.workspace.dot(dotId)) throw new Error('Dot não encontrado.');
     const id = randomUUID();
     try {
       await this.intelligence!.createThread({
@@ -157,7 +157,7 @@ export class Platform {
       });
     } catch {
       throw new Error(
-        'Intelligence could not create this conversation. Check the runtime key and connection.',
+        'O Intelligence não conseguiu criar esta conversa. Verifique a chave e a conexão do runtime.',
       );
     }
     return this.workspace.bindThread(id, dotId, title);
@@ -182,7 +182,9 @@ export class Platform {
   async handle(request: Request): Promise<Response> {
     if (!this.handler)
       return Response.json(
-        { error: `Setup required: ${INTELLIGENCE_KEY_MISSING_LABEL}.` },
+        {
+          error: `Configuração necessária: ${INTELLIGENCE_KEY_MISSING_LABEL}.`,
+        },
         { status: 503 },
       );
     let body: unknown;
@@ -199,7 +201,7 @@ export class Platform {
           error:
             error instanceof Error
               ? error.message
-              : 'Conversation scope denied.',
+              : 'Escopo da conversa negado.',
         },
         { status: 403 },
       );

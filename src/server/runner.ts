@@ -28,17 +28,19 @@ export class Runner {
       if (this.active.has(task.id) && task.lease)
         this.store.interrupt(
           { ...task, lease: task.lease },
-          'Server stopped during this run. Review completed effects before retrying.',
+          'O servidor parou durante esta execução. Revise o que já foi feito antes de tentar de novo.',
         );
     }
     this.abortAll();
   }
   abort(id: string) {
-    this.active.get(id)?.abort(new Error('Run stopped.'));
+    this.active.get(id)?.abort(new Error('Execução interrompida.'));
   }
   abortAll() {
     for (const controller of this.active.values())
-      controller.abort(new Error('Run stopped because settings changed.'));
+      controller.abort(
+        new Error('Execução interrompida porque as configurações mudaram.'),
+      );
   }
   async tick() {
     try {
@@ -60,15 +62,19 @@ export class Runner {
     const ownershipCheck = setInterval(() => {
       try {
         if (!this.store.owns(claim))
-          controller.abort(new Error('Run permission or lease was revoked.'));
+          controller.abort(
+            new Error('A permissão ou a reserva da execução foi revogada.'),
+          );
       } catch {
-        controller.abort(new Error('Run ownership check failed.'));
+        controller.abort(
+          new Error('A verificação de posse da execução falhou.'),
+        );
       }
     }, 100);
     const timeout = setTimeout(
       () =>
         controller.abort(
-          new Error('Research exceeded the 90 second time limit.'),
+          new Error('A pesquisa excedeu o limite de 90 segundos.'),
         ),
       90_000,
     );
@@ -77,7 +83,9 @@ export class Runner {
       const memories = settings.memoryAllowed ? this.store.memories() : [];
       const progress = (text: string) => {
         if (!this.store.owns(claim))
-          controller.abort(new Error('Run permission or lease was revoked.'));
+          controller.abort(
+            new Error('A permissão ou a reserva da execução foi revogada.'),
+          );
         controller.signal.throwIfAborted();
         this.store.event(claim.id, claim.lease, text);
       };
@@ -95,7 +103,9 @@ export class Runner {
     } catch (error) {
       this.store.fail(
         claim,
-        error instanceof Error ? error.message : 'Unexpected research failure.',
+        error instanceof Error
+          ? error.message
+          : 'Falha inesperada na pesquisa.',
       );
     } finally {
       clearInterval(ownershipCheck);

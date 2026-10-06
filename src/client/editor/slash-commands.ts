@@ -6,6 +6,8 @@ import Suggestion, {
 interface Block {
   title: string;
   description: string;
+  /** Extra search terms (English names kept so existing queries still match). */
+  keywords: string;
   run: (editor: Editor, range: Range) => void;
 }
 const command =
@@ -15,53 +17,62 @@ const command =
   };
 export const blocks: Block[] = [
   {
-    title: 'Text',
-    description: 'Start with a plain paragraph',
+    title: 'Texto',
+    description: 'Comece com um parágrafo simples',
+    keywords: 'text paragraph',
     run: command((e) => e.chain().setParagraph().run()),
   },
   ...([1, 2, 3] as const).map((level) => ({
-    title: `Heading ${level}`,
+    title: `Título ${level}`,
     description:
       level === 1
-        ? 'A large section heading'
+        ? 'Um título de seção grande'
         : level === 2
-          ? 'A medium section heading'
-          : 'A small section heading',
+          ? 'Um título de seção médio'
+          : 'Um título de seção pequeno',
+    keywords: `heading ${level}`,
     run: command((e) => e.chain().setHeading({ level }).run()),
   })),
   {
-    title: 'Bullet list',
-    description: 'A simple unordered list',
+    title: 'Lista com marcadores',
+    description: 'Uma lista simples não ordenada',
+    keywords: 'bullet list',
     run: command((e) => e.chain().toggleBulletList().run()),
   },
   {
-    title: 'Numbered list',
-    description: 'An ordered sequence',
+    title: 'Lista numerada',
+    description: 'Uma sequência ordenada',
+    keywords: 'numbered list',
     run: command((e) => e.chain().toggleOrderedList().run()),
   },
   {
-    title: 'Checklist',
-    description: 'Track things to do',
+    title: 'Lista de tarefas',
+    description: 'Acompanhe o que precisa ser feito',
+    keywords: 'checklist todo checkbox',
     run: command((e) => e.chain().toggleTaskList().run()),
   },
   {
-    title: 'Quote',
-    description: 'Highlight a passage',
+    title: 'Citação',
+    description: 'Destaque um trecho',
+    keywords: 'quote blockquote',
     run: command((e) => e.chain().toggleBlockquote().run()),
   },
   {
-    title: 'Code',
-    description: 'A code block',
+    title: 'Código',
+    description: 'Um bloco de código',
+    keywords: 'code',
     run: command((e) => e.chain().toggleCodeBlock().run()),
   },
   {
-    title: 'Divider',
-    description: 'Separate sections',
+    title: 'Divisor',
+    description: 'Separe seções',
+    keywords: 'divider separator hr',
     run: command((e) => e.chain().setHorizontalRule().run()),
   },
   {
-    title: 'Table',
-    description: 'Three columns with a header',
+    title: 'Tabela',
+    description: 'Três colunas com cabeçalho',
+    keywords: 'table',
     run: command((e) =>
       e.chain().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
     ),
@@ -78,7 +89,7 @@ export const SlashCommands = Extension.create({
         allowedPrefixes: null,
         items: ({ query }) =>
           blocks.filter((block) =>
-            `${block.title} ${block.description}`
+            `${block.title} ${block.description} ${block.keywords}`
               .toLowerCase()
               .includes(query.toLowerCase()),
           ),
@@ -108,11 +119,11 @@ export const SlashCommands = Extension.create({
             menu.replaceChildren();
             const label = document.createElement('div');
             label.className = 'slash-menu-label';
-            label.textContent = 'INSERT BLOCK';
+            label.textContent = 'INSERIR BLOCO';
             menu.append(label);
             if (!props.items.length) {
               const empty = document.createElement('p');
-              empty.textContent = 'No matching blocks';
+              empty.textContent = 'Nenhum bloco encontrado';
               menu.append(empty);
             }
             props.items.forEach((item, i) => {
@@ -154,7 +165,7 @@ export const SlashCommands = Extension.create({
               menu.id = 'document-block-menu';
               menu.className = 'slash-menu';
               menu.setAttribute('role', 'listbox');
-              menu.setAttribute('aria-label', 'Insert block');
+              menu.setAttribute('aria-label', 'Inserir bloco');
               document.body.append(menu);
               props.editor.view.dom.setAttribute('aria-controls', menu.id);
               props.editor.view.dom.setAttribute('aria-autocomplete', 'list');

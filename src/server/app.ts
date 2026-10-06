@@ -31,7 +31,7 @@ export function createApp({
     '/api/*',
     bodyLimit({
       maxSize: 1_000_000,
-      onError: (c) => c.json({ error: 'Request is too large.' }, 413),
+      onError: (c) => c.json({ error: 'A requisição é grande demais.' }, 413),
     }),
   );
   app.use('/api/*', async (c, next) => {
@@ -61,13 +61,19 @@ export function createApp({
       ...originHostnames,
     ]);
     if (!ownerToken && !allowedHosts.has(requestUrl.hostname))
-      return c.json({ error: 'Unrecognized host.' }, 403);
+      return c.json({ error: 'Host não reconhecido.' }, 403);
     const requestOrigin = c.req.header('origin');
     const allowedOrigins = new Set(origins ?? [new URL(c.req.url).origin]);
     if (requestOrigin && !allowedOrigins.has(requestOrigin))
-      return c.json({ error: 'Cross-origin requests are not allowed.' }, 403);
+      return c.json(
+        { error: 'Requisições de outra origem não são permitidas.' },
+        403,
+      );
     if (c.req.header('sec-fetch-site') === 'cross-site')
-      return c.json({ error: 'Cross-site requests are not allowed.' }, 403);
+      return c.json(
+        { error: 'Requisições entre sites não são permitidas.' },
+        403,
+      );
     if (ownerToken) {
       const expected = Buffer.from(ownerToken);
       const supplied = Buffer.from(
@@ -78,7 +84,10 @@ export function createApp({
         !timingSafeEqual(expected, supplied)
       )
         return c.json(
-          { error: 'Enter your owner access token to unlock OpenDots.' },
+          {
+            error:
+              'Informe seu token de acesso de proprietário para desbloquear o OpenDots.',
+          },
           401,
         );
     }
@@ -86,7 +95,7 @@ export function createApp({
       !['GET', 'HEAD'].includes(c.req.method) &&
       !c.req.header('content-type')?.includes('application/json')
     )
-      return c.json({ error: 'Use application/json.' }, 415);
+      return c.json({ error: 'Use o tipo de conteúdo application/json.' }, 415);
     await next();
   });
   if (platform) app.route('/api', computerRoutes(platform.computers));
@@ -114,28 +123,33 @@ export function createApp({
       return c.json(
         {
           error:
-            'Enter a request between 3 and 4,000 characters; repeat intervals must be at least 60 seconds.',
+            'Digite um pedido entre 3 e 4.000 caracteres; intervalos de repetição devem ter pelo menos 60 segundos.',
         },
         400,
       );
     if (!store.settings().researchAllowed)
-      return c.json({ error: 'Research is disabled in Settings.' }, 403);
+      return c.json(
+        { error: 'A pesquisa está desativada nas Configurações.' },
+        403,
+      );
     if (platform) {
       if (platform.setup().missing.length)
         return c.json(
-          { error: `Setup required: ${platform.setup().missing.join(', ')}.` },
+          {
+            error: `Configuração necessária: ${platform.setup().missing.join(', ')}.`,
+          },
           503,
         );
       if (!parsed.data.threadId)
         return c.json(
-          { error: 'Select a conversation for this scheduled task.' },
+          { error: 'Selecione uma conversa para esta tarefa agendada.' },
           400,
         );
       try {
         platform.workspace.requireThread(parsed.data.threadId);
       } catch {
         return c.json(
-          { error: 'Conversation is not owned by this workspace.' },
+          { error: 'Esta conversa não pertence a este espaço de trabalho.' },
           403,
         );
       }
@@ -150,19 +164,27 @@ export function createApp({
   });
   app.get('/api/tasks/:id', (c) => {
     const detail = store.detail(c.req.param('id'));
-    return detail ? c.json(detail) : c.json({ error: 'Task not found.' }, 404);
+    return detail
+      ? c.json(detail)
+      : c.json({ error: 'Tarefa não encontrada.' }, 404);
   });
   app.post('/api/tasks/:id/actions', async (c) => {
     const parsed = z
       .object({ action: z.enum(['run', 'pause', 'cancel']) })
       .strict()
       .safeParse(await c.req.json().catch(() => null));
-    if (!parsed.success) return c.json({ error: 'Unknown task action.' }, 400);
+    if (!parsed.success)
+      return c.json({ error: 'Ação de tarefa desconhecida.' }, 400);
     if (parsed.data.action === 'run' && !store.settings().researchAllowed)
-      return c.json({ error: 'Research is disabled in Settings.' }, 403);
+      return c.json(
+        { error: 'A pesquisa está desativada nas Configurações.' },
+        403,
+      );
     const task = store.action(c.req.param('id'), parsed.data.action);
     if (parsed.data.action !== 'run') runner.abort(c.req.param('id'));
-    return task ? c.json(task) : c.json({ error: 'Task not found.' }, 404);
+    return task
+      ? c.json(task)
+      : c.json({ error: 'Tarefa não encontrada.' }, 404);
   });
   app.put('/api/tasks/:id/schedule', async (c) => {
     const parsed = z
@@ -171,11 +193,16 @@ export function createApp({
       .safeParse(await c.req.json().catch(() => null));
     if (!parsed.success)
       return c.json(
-        { error: 'Repeat interval must be 60 seconds to one year, or null.' },
+        {
+          error:
+            'O intervalo de repetição deve ficar entre 60 segundos e um ano, ou ser nulo.',
+        },
         400,
       );
     const task = store.schedule(c.req.param('id'), parsed.data.intervalSeconds);
-    return task ? c.json(task) : c.json({ error: 'Task not found.' }, 404);
+    return task
+      ? c.json(task)
+      : c.json({ error: 'Tarefa não encontrada.' }, 404);
   });
   app.patch('/api/settings', async (c) => {
     const parsed = z
@@ -187,7 +214,8 @@ export function createApp({
       })
       .strict()
       .safeParse(await c.req.json().catch(() => null));
-    if (!parsed.success) return c.json({ error: 'Invalid settings.' }, 400);
+    if (!parsed.success)
+      return c.json({ error: 'Configurações inválidas.' }, 400);
     const previous = store.settings();
     const settings = store.updateSettings(parsed.data);
     if (
@@ -207,7 +235,7 @@ export function createApp({
       .safeParse(await c.req.json().catch(() => null));
     if (!parsed.success)
       return c.json(
-        { error: 'Memory must be between 1 and 2,000 characters.' },
+        { error: 'A memória deve ter entre 1 e 2.000 caracteres.' },
         400,
       );
     return c.json(store.saveMemory(parsed.data.text), 201);
@@ -219,24 +247,24 @@ export function createApp({
       .safeParse(await c.req.json().catch(() => null));
     if (!parsed.success)
       return c.json(
-        { error: 'Memory must be between 1 and 2,000 characters.' },
+        { error: 'A memória deve ter entre 1 e 2.000 caracteres.' },
         400,
       );
     if (!store.memories().some((m) => m.id === c.req.param('id')))
-      return c.json({ error: 'Memory not found.' }, 404);
+      return c.json({ error: 'Memória não encontrada.' }, 404);
     return c.json(store.saveMemory(parsed.data.text, c.req.param('id')));
   });
   app.delete('/api/memories/:id', (c) =>
     store.deleteMemory(c.req.param('id'))
       ? c.json({ ok: true })
-      : c.json({ error: 'Memory not found.' }, 404),
+      : c.json({ error: 'Memória não encontrada.' }, 404),
   );
   app.onError((error, c) => {
     console.error('API request failed:', error.name);
     return c.json(
       {
         error:
-          'The server could not complete this request. Check server logs and database access.',
+          'O servidor não conseguiu concluir esta requisição. Verifique os logs do servidor e o acesso ao banco de dados.',
       },
       500,
     );

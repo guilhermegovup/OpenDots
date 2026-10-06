@@ -64,7 +64,7 @@ it('reports either accepted name from the same label used by setup status and th
     );
     expect(response.status).toBe(503);
     expect(await response.json()).toEqual({
-      error: `Setup required: ${INTELLIGENCE_KEY_MISSING_LABEL}.`,
+      error: `Configuração necessária: ${INTELLIGENCE_KEY_MISSING_LABEL}.`,
     });
     expect(platform.setup().missing).toContain(INTELLIGENCE_KEY_MISSING_LABEL);
   } finally {

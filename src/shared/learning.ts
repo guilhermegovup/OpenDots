@@ -5,7 +5,7 @@ export const learningContainerIdSchema = z
   .max(64)
   .regex(
     /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-    'Use 1–64 lowercase letters, numbers, and single hyphens.',
+    'Use de 1 a 64 letras minúsculas, números e hífens simples.',
   )
   .nullable();
 
@@ -15,8 +15,10 @@ export function validateLearningSettings(
 ) {
   if (!learningContainerIdSchema.safeParse(containerId).success)
     throw new Error(
-      'Dot Learning container ID must use 1–64 lowercase letters, numbers, and single hyphens.',
+      'O ID do contêiner de aprendizado do Dot deve usar de 1 a 64 letras minúsculas, números e hífens simples.',
     );
   if (delivery && !containerId)
-    throw new Error('Dot skill delivery requires a Learning container.');
+    throw new Error(
+      'A entrega de skills do Dot exige um contêiner de aprendizado.',
+    );
 }

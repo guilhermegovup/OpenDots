@@ -54,7 +54,7 @@ export function PageReviewCard({
           setError(
             cause instanceof Error
               ? cause.message
-              : 'Could not restore this review.',
+              : 'Não foi possível restaurar esta revisão.',
           );
       });
     return () => {
@@ -88,7 +88,7 @@ export function PageReviewCard({
       setError(
         cause instanceof Error
           ? cause.message
-          : 'Could not save the approved draft.',
+          : 'Não foi possível salvar o rascunho aprovado.',
       );
     } finally {
       pending.current = false;
@@ -96,34 +96,34 @@ export function PageReviewCard({
     }
   };
   return (
-    <section className="page-review-card" aria-label="Review page draft">
+    <section className="page-review-card" aria-label="Revisar rascunho da página">
       <header>
         <FileText size={17} />
         <strong>
           {conflict
-            ? 'Review changed'
+            ? 'Revisão alterada'
             : saved
-              ? 'Saved to your Space'
+              ? 'Salvo no seu Espaço'
               : !receiptReady
-                ? 'Checking saved review…'
+                ? 'Verificando revisão salva…'
                 : finished
-                  ? 'Review ended'
-                  : 'Ready for your review'}
+                  ? 'Revisão encerrada'
+                  : 'Pronto para sua revisão'}
         </strong>
         <span>
           {conflict
-            ? 'Needs new review'
+            ? 'Precisa de nova revisão'
             : saved
-              ? 'Approved'
+              ? 'Aprovado'
               : !receiptReady
-                ? 'Checking'
+                ? 'Verificando'
                 : finished
-                  ? 'Not saved'
-                  : 'You decide'}
+                  ? 'Não salvo'
+                  : 'Você decide'}
         </span>
       </header>
       <div className="page-review-body">
-        <h3>{draft.success ? draft.data.title : 'Preparing your draft…'}</h3>
+        <h3>{draft.success ? draft.data.title : 'Preparando seu rascunho…'}</h3>
         {draft.success && (
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
@@ -142,8 +142,8 @@ export function PageReviewCard({
       </div>
       {conflict && (
         <p role="alert">
-          This review was saved with a different draft. Start a new review for
-          the changed draft.
+          Esta revisão foi salva com outro rascunho. Inicie uma nova revisão
+          para o rascunho alterado.
         </p>
       )}
       {error && <p role="alert">{error}</p>}
@@ -152,7 +152,7 @@ export function PageReviewCard({
           type="button"
           onClick={() => setRestoreAttempt((attempt) => attempt + 1)}
         >
-          Retry review
+          Tentar revisar de novo
         </button>
       )}
       <footer>
@@ -166,7 +166,7 @@ export function PageReviewCard({
               )
             }
           >
-            {conflict ? 'Open saved page' : 'Open page'}{' '}
+            {conflict ? 'Abrir página salva' : 'Abrir página'}{' '}
             <ArrowUpRight size={15} />
           </button>
         )}
@@ -180,10 +180,10 @@ export function PageReviewCard({
             >
               <Check size={15} />
               {busy
-                ? 'Saving…'
+                ? 'Salvando…'
                 : saved
-                  ? 'Continue conversation'
-                  : 'Approve & save'}
+                  ? 'Continuar conversa'
+                  : 'Aprovar e salvar'}
             </button>
             {!saved && (
               <button
@@ -191,7 +191,7 @@ export function PageReviewCard({
                 disabled={busy}
                 onClick={() => void decide(false)}
               >
-                Decline
+                Recusar
               </button>
             )}
           </>
@@ -199,10 +199,10 @@ export function PageReviewCard({
         {!saved && !conflict && (
           <small>
             {!receiptReady
-              ? 'Checking whether this draft was already saved.'
+              ? 'Verificando se este rascunho já foi salvo.'
               : finished
-                ? 'No page was saved.'
-                : 'Nothing is saved until you approve.'}
+                ? 'Nenhuma página foi salva.'
+                : 'Nada é salvo até você aprovar.'}
           </small>
         )}
       </footer>

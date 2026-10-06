@@ -296,7 +296,7 @@ it('reports a turn that hits the time limit as a RUN_ERROR instead of ending sil
       expect.arrayContaining([
         expect.objectContaining({
           type: EventType.RUN_ERROR,
-          message: expect.stringMatching(/time limit/i),
+          message: expect.stringMatching(/limite de 90 segundos/i),
         }),
       ]),
     );

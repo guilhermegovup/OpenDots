@@ -40,7 +40,7 @@ it('exports canonical user/assistant text and rejects failed or oversized histor
     getThreadMessages,
   }));
   const page = await service.saveConversation('thread', 'Saved', null);
-  expect(page.content).toBe('## You\n\nQuestion\n\n## Dot\n\nAnswer');
+  expect(page.content).toBe('## Você\n\nQuestion\n\n## Dot\n\nAnswer');
   expect(page.sourceThreadId).toBe('thread');
   getThreadMessages.mockRejectedValueOnce(new Error('Offline'));
   await expect(
@@ -51,7 +51,7 @@ it('exports canonical user/assistant text and rejects failed or oversized histor
   });
   await expect(
     service.saveConversation('thread', 'Too long', null),
-  ).rejects.toThrow(/exceeds/);
+  ).rejects.toThrow(/excede/);
   expect(ws.pages.list(dot.spaceId)).toHaveLength(1);
   ws.close();
 });
@@ -91,7 +91,7 @@ it('recovers the same reserved thread after a restart lease and a remote-success
   const service = new PageService(ws, () => sdk);
   await expect(
     service.conversation(dot.spaceId, page.id, dot.id),
-  ).rejects.toThrow(/being created/);
+  ).rejects.toThrow(/sendo criada/);
   vi.spyOn(Date, 'now').mockReturnValue(Date.now() + 61000);
   const result = await service.conversation(dot.spaceId, page.id, dot.id);
   expect(result.id).toBe('stable-thread');
@@ -115,7 +115,7 @@ it('rejects a specialist in another Space before Intelligence is accessed', asyn
   });
   const service = new PageService(ws, getSdk);
   await expect(service.conversation(space.id, page.id, dot.id)).rejects.toThrow(
-    /specialist in this Space/,
+    /especialista deste Espaço/,
   );
   expect(getSdk).not.toHaveBeenCalled();
   ws.close();
@@ -170,7 +170,7 @@ it('grants multiple Spaces without changing thread identity and enforces revocat
     service.conversation(other.id, page.id, dot.id),
   ).rejects.toThrow();
   await expect(service.saveConversation(thread.id, 'No', null)).rejects.toThrow(
-    /revoked/,
+    /revogado/,
   );
   ws.updateDot(dot.id, { ...dot, spaceIds: [dot.spaceId, other.id] });
   expect((await service.conversation(other.id, page.id, dot.id)).id).toBe(

@@ -84,7 +84,7 @@ export function useVoice(
       setError(
         e instanceof Error
           ? e.message
-          : 'Call ended, but its receipt could not be saved.',
+          : 'A chamada foi encerrada, mas o registro não pôde ser salvo.',
       );
     } finally {
       closeMedia();
@@ -131,7 +131,7 @@ export function useVoice(
             current.controlPollFailures += 1;
             if (current.controlPollFailures < CONTROL_POLL_FAILURE_LIMIT)
               return;
-            setError('Call control connection was lost.');
+            setError('A conexão de controle da chamada foi perdida.');
             void end();
           });
     }, 2000);
@@ -180,7 +180,7 @@ export function useVoice(
         void audio.play().catch(() => {
           if (!current.cancelled)
             setError(
-              'Audio playback was blocked. Check your browser audio permissions.',
+              'A reprodução de áudio foi bloqueada. Verifique as permissões de áudio do navegador.',
             );
         });
       };
@@ -203,12 +203,12 @@ export function useVoice(
             current.disconnectTimer = undefined;
             if (current.cancelled || pc.connectionState !== 'disconnected')
               return;
-            setError('The voice connection dropped.');
+            setError('A conexão de voz caiu.');
             void end();
           }, 5000);
         }
         if (pc.connectionState === 'failed') {
-          setError('The voice connection dropped.');
+          setError('A conexão de voz caiu.');
           void end();
         }
       };
@@ -251,7 +251,7 @@ export function useVoice(
         }
         if (data.type === 'error')
           setError(
-            'The voice provider reported a session error. End the call and retry.',
+            'O provedor de voz informou um erro na sessão. Encerre a chamada e tente novamente.',
           );
         if (
           data.type !== 'response.function_call_arguments.done' ||
@@ -331,7 +331,7 @@ export function useVoice(
       closeMedia();
       session.current = undefined;
       setStatus('idle');
-      setError(e instanceof Error ? e.message : 'Could not connect the call.');
+      setError(e instanceof Error ? e.message : 'Não foi possível conectar a chamada.');
     } finally {
       if (attempt === generation.current) connecting.current = false;
     }

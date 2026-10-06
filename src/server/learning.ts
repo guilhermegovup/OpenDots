@@ -25,7 +25,7 @@ export function learningSelector(
           .conversations()
           .some((thread) => thread.id === input.threadId)
       )
-        workspace.bindThread(input.threadId, agentId, 'Slack conversation');
+        workspace.bindThread(input.threadId, agentId, 'Conversa no Slack');
     }
     return (
       workspace.requireThread(input.threadId, agentId).learningContainerId ??

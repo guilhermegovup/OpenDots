@@ -45,7 +45,7 @@ export class ComputerService {
   }
   private requireDot(id: string) {
     if (!/^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/.test(id) || !this.workspace.dot(id))
-      throw new Error('Dot not found.');
+      throw new Error('Dot não encontrado.');
   }
   private allowed(
     id: string,
@@ -54,12 +54,12 @@ export class ComputerService {
   ) {
     this.requireDot(id);
     if (!this.configured)
-      throw new Error('Computer service is not configured.');
+      throw new Error('O serviço de computador não está configurado.');
     const policy = this.workspace.computers.permissions(id);
     if (!policy.enabled || (kind && !policy[kind]))
-      throw new Error('Computer permission is disabled.');
+      throw new Error('A permissão de computador está desativada.');
     if (actor === 'agent' && this.paused())
-      throw new Error('Agents are paused.');
+      throw new Error('Os agentes estão pausados.');
   }
   private async json(
     url: string,
@@ -117,16 +117,19 @@ export class ComputerService {
       return JSON.parse(text);
     } catch (error) {
       if (combined.aborted)
-        throw new Error('Computer request was cancelled or timed out.', {
-          cause: error,
-        });
+        throw new Error(
+          'A requisição ao computador foi cancelada ou expirou.',
+          {
+            cause: error,
+          },
+        );
       if (
         error instanceof Error &&
         /^Computer (service returned|response exceeded)/.test(error.message)
       )
         throw error;
       throw new Error(
-        'Computer service is unavailable or returned an invalid response.',
+        'O serviço de computador está indisponível ou retornou uma resposta inválida.',
         { cause: error },
       );
     } finally {
@@ -183,7 +186,7 @@ export class ComputerService {
   private async running(id: string, signal?: AbortSignal) {
     const state = await this.existing(id, signal);
     if (!state || state.status !== 'running')
-      throw new Error('Start this Dot’s computer first.');
+      throw new Error('Inicie primeiro o computador deste Dot.');
     return this.endpoint(id, state);
   }
   async status(id: string): Promise<ComputerStatus> {
@@ -214,7 +217,7 @@ export class ComputerService {
         ...base,
         state: 'unavailable',
         error:
-          'Computer service is unavailable. Check the supervisor configuration and connection.',
+          'O serviço de computador está indisponível. Verifique a configuração e a conexão do supervisor.',
       };
     }
   }
@@ -252,7 +255,7 @@ export class ComputerService {
   async stop(id: string) {
     await this.audited(id, 'stop', 'owner', async () => {
       if (!this.configured)
-        throw new Error('Computer service is not configured.');
+        throw new Error('O serviço de computador não está configurado.');
       await this.supervisor(`/computers/${id}/stop`, {});
     });
     return this.status(id);
@@ -260,7 +263,7 @@ export class ComputerService {
   async control(id: string, verb: 'take' | 'release') {
     await this.audited(id, verb, 'owner', async () => {
       if (!this.configured)
-        throw new Error('Computer service is not configured.');
+        throw new Error('O serviço de computador não está configurado.');
       if (verb === 'take') this.allowed(id, 'browser', 'owner');
       const url = await this.running(id);
       if (verb === 'take') this.allowed(id, 'browser', 'owner');
@@ -297,8 +300,7 @@ export class ComputerService {
             id,
           ),
         );
-      if (!control.request)
-        throw new Error('There is no active control request.');
+      if (!control.request) throw new Error('Não há pedido de controle ativo.');
       await this.json(
         `${url}/control/${verb}`,
         this.token(id),
@@ -317,11 +319,11 @@ export class ComputerService {
     signal?: AbortSignal,
   ): Promise<unknown> {
     if (!Object.hasOwn(computerInputs, action))
-      throw new Error('Unknown computer action.');
+      throw new Error('Ação de computador desconhecida.');
     const parsed = computerInputs[action].parse(input);
     return this.audited(id, action, actor, async () => {
       if (actor === 'agent' && action.startsWith('human_'))
-        throw new Error('Human controls are owner-only.');
+        throw new Error('Os controles humanos são exclusivos do proprietário.');
       const kind =
         action === 'exec'
           ? 'shell'

@@ -155,7 +155,7 @@ it('rejects foreign targets, nonexistent Dots, traversal, unexpected inputs and 
   await expect(f.service.action(f.id, 'read', {})).rejects.toThrow('endpoint');
   expect(f.calls).toHaveLength(1);
   await expect(f.service.action('missing', 'read', {})).rejects.toThrow(
-    'Dot not found',
+    'Dot não encontrado',
   );
   for (const path of [
     '../secret',
@@ -173,17 +173,17 @@ it('rejects foreign targets, nonexistent Dots, traversal, unexpected inputs and 
   ).toBe(false);
   await expect(
     f.service.action(f.id, 'human_type', { text: 'secret' }, 'agent'),
-  ).rejects.toThrow('owner-only');
+  ).rejects.toThrow('exclusivos do proprietário');
 });
 it('checks current permissions and global pause and records failure without sensitive inputs', async () => {
   const f = fixture();
   f.workspace.computers.patch(f.id, { shell: false });
   await expect(
     f.service.action(f.id, 'exec', { command: 'sensitive command' }, 'agent'),
-  ).rejects.toThrow('permission');
+  ).rejects.toThrow('permissão');
   f.setPaused(true);
   await expect(f.service.action(f.id, 'read', {}, 'agent')).rejects.toThrow(
-    'paused',
+    'pausados',
   );
   expect(f.calls).toHaveLength(0);
   expect(JSON.stringify(f.workspace.computers.audit(f.id))).not.toContain(
@@ -207,9 +207,9 @@ it('cancels in-flight actions on revocation and bounds upstream deadlines', asyn
   );
   const run = f.service.action(f.id, 'exec', { command: 'wait' }, 'agent');
   setTimeout(() => f.workspace.computers.patch(f.id, { shell: false }), 20);
-  await expect(run).rejects.toThrow('cancelled or timed out');
+  await expect(run).rejects.toThrow('cancelada ou expirou');
   await expect(f.service.action(f.id, 'read', {})).rejects.toThrow(
-    'cancelled or timed out',
+    'cancelada ou expirou',
   );
   expect(
     f.workspace.computers.audit(f.id).every((a) => a.outcome === 'failed'),

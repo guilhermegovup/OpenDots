@@ -9,17 +9,26 @@ import { Mascot } from './Mascot';
 export const relative = (value: number) => {
   const minutes = Math.floor((Date.now() - value) / 60000);
   return minutes < 1
-    ? 'Just now'
+    ? 'Agora mesmo'
     : minutes < 60
-      ? `${minutes}m ago`
+      ? `há ${minutes} min`
       : minutes < 1440
-        ? `${Math.floor(minutes / 60)}h ago`
-        : new Date(value).toLocaleDateString();
+        ? `há ${Math.floor(minutes / 60)} h`
+        : new Date(value).toLocaleDateString('pt-BR');
+};
+const statusNames: Record<Task['status'], string> = {
+  queued: 'Na fila',
+  running: 'Em execução',
+  paused: 'Pausada',
+  completed: 'Concluída',
+  failed: 'Falhou',
+  interrupted: 'Interrompida',
+  cancelled: 'Cancelada',
 };
 export const statusLabel = (task: Task) =>
   task.status === 'completed' && task.nextRunAt
-    ? 'Scheduled'
-    : task.status.charAt(0).toUpperCase() + task.status.slice(1);
+    ? 'Agendada'
+    : (statusNames[task.status] ?? task.status);
 export function Status({ task }: { task: Task }) {
   return (
     <span className={`status ${task.status}`}>
@@ -51,7 +60,7 @@ export function TaskRow({
         <strong>{task.prompt}</strong>
         <span>
           {task.intervalSeconds
-            ? `Repeats every ${task.intervalSeconds < 3600 ? task.intervalSeconds / 60 + ' min' : task.intervalSeconds / 3600 + ' hr'} · `
+            ? `Repete a cada ${task.intervalSeconds < 3600 ? task.intervalSeconds / 60 + ' min' : task.intervalSeconds / 3600 + ' h'} · `
             : ''}
           {relative(task.updatedAt)}
         </span>

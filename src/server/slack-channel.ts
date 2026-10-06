@@ -75,7 +75,7 @@ export function slackHandlers(options: {
     if (options.paused()) {
       await notice(
         thread,
-        'OpenDots is paused. Resume it in the app before asking me to continue.',
+        'O OpenDots está pausado. Retome-o no app antes de me pedir para continuar.',
       );
       return;
     }

@@ -1,4 +1,10 @@
 const characters = ['blue', 'mint', 'orange', 'purple'] as const;
+/** Display-only labels; `state` itself stays a CSS class value. */
+const stateLabels: Record<string, string> = {
+  idle: 'disponível',
+  working: 'trabalhando',
+  paused: 'em pausa',
+};
 
 /** Stable identity keeps each specialist recognizable across views and reloads. */
 function characterFor(identity?: string) {
@@ -27,7 +33,7 @@ export function Mascot({
       <img
         className="dot-body"
         src={`/dots/${characterFor(identity)}.png`}
-        alt={decorative ? '' : `${name} is ${state}`}
+        alt={decorative ? '' : `${name} está ${stateLabels[state] ?? state}`}
         width={512}
         height={512}
         draggable={false}

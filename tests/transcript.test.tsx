@@ -27,9 +27,9 @@ it('keeps call receipts between the anchored message and later conversation turn
     />,
   );
   expect(html.indexOf('Before the call')).toBeLessThan(
-    html.indexOf('Call ended'),
+    html.indexOf('Chamada encerrada'),
   );
-  expect(html.indexOf('Call ended')).toBeLessThan(
+  expect(html.indexOf('Chamada encerrada')).toBeLessThan(
     html.indexOf('Later message'),
   );
 });
@@ -96,7 +96,7 @@ it('visually labels scheduled prompts while keeping ordinary user messages uncha
 
   expect(html).toContain('Manual request');
   expect(html).toContain('Scheduled request body');
-  expect(html).toContain('Scheduled');
+  expect(html).toContain('Agendado');
   expect(html).toContain('chat-bubble user scheduled');
   expect(html).toContain(
     '<div class="chat-bubble user"><p>Manual request</p></div>',
@@ -138,7 +138,7 @@ it('retains the scheduled label when history replay provides only the durable me
     />,
   );
 
-  expect(html).toContain('Scheduled');
+  expect(html).toContain('Agendado');
   expect(html).toContain('Replayed scheduled prompt');
   expect(html).toContain('chat-bubble user scheduled');
 });

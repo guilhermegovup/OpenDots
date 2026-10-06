@@ -50,7 +50,7 @@ export function inspectMarkdown(source: string): {
       return {
         supported: false,
         reason:
-          'This document contains extended Markdown. Source mode preserves it exactly.',
+          'Este documento contém Markdown estendido. O modo código o preserva exatamente.',
       };
     const tokens = markdownManager.instance.lexer(source);
     let unsupported = false;
@@ -74,7 +74,7 @@ export function inspectMarkdown(source: string): {
       return {
         supported: false,
         reason:
-          'This document contains images, HTML, or formatting that needs Markdown source mode. Nothing has been changed.',
+          'Este documento contém imagens, HTML ou formatação que exige o modo código Markdown. Nada foi alterado.',
       };
     const parsed = markdownManager.parse(source);
     const restored = markdownManager.parse(markdownManager.serialize(parsed));
@@ -82,13 +82,13 @@ export function inspectMarkdown(source: string): {
       return {
         supported: false,
         reason:
-          'Some formatting cannot be safely round-tripped. Source mode keeps the original document intact.',
+          'Parte da formatação não pode ser convertida com segurança. O modo código mantém o documento original intacto.',
       };
     return { supported: true };
   } catch {
     return {
       supported: false,
-      reason: 'This Markdown needs source mode to preserve its contents.',
+      reason: 'Este Markdown precisa do modo código para preservar seu conteúdo.',
     };
   }
 }

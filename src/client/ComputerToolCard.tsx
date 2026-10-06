@@ -18,18 +18,18 @@ export type ComputerToolRenderProps = {
   result?: unknown;
 };
 const labels: Record<string, string> = {
-  navigate: 'Opening website',
-  snapshot: 'Inspecting browser',
-  read: 'Reading page',
-  screenshot: 'Viewing browser',
-  click: 'Clicking in browser',
-  type: 'Typing in browser',
-  key: 'Using keyboard',
-  scroll: 'Scrolling page',
-  files_write: 'Saving file',
-  files_read: 'Reading file',
-  files_list: 'Listing files',
-  exec: 'Running terminal command',
+  navigate: 'Abrindo site',
+  snapshot: 'Inspecionando o navegador',
+  read: 'Lendo a página',
+  screenshot: 'Visualizando o navegador',
+  click: 'Clicando no navegador',
+  type: 'Digitando no navegador',
+  key: 'Usando o teclado',
+  scroll: 'Rolando a página',
+  files_write: 'Salvando arquivo',
+  files_read: 'Lendo arquivo',
+  files_list: 'Listando arquivos',
+  exec: 'Executando comando no terminal',
 };
 export function computerToolResult(raw: unknown): Record<string, unknown> {
   if (typeof raw === 'string') {
@@ -81,14 +81,14 @@ export function ComputerToolCard({
     !!error ||
     (typeof data.exitCode === 'number' && data.exitCode !== 0);
   const state = interrupted
-    ? 'Interrupted'
+    ? 'Interrompido'
     : failed
-      ? 'Needs attention'
+      ? 'Requer atenção'
       : complete
-        ? 'Finished'
+        ? 'Concluído'
         : running
-          ? 'Working'
-          : 'Interrupted';
+          ? 'Em andamento'
+          : 'Interrompido';
   const detail =
     typeof parameters.url === 'string'
       ? parameters.url
@@ -121,7 +121,7 @@ export function ComputerToolCard({
             setScreenError(
               cause instanceof Error
                 ? cause.message
-                : 'Computer preview unavailable.',
+                : 'Prévia do computador indisponível.',
             );
           }
         }
@@ -144,18 +144,18 @@ export function ComputerToolCard({
   return (
     <section
       className={`inline-computer ${showScreen ? 'with-screen' : ''}`}
-      aria-label={`${dotName} computer: ${labels[action] ?? action}`}
+      aria-label={`Computador de ${dotName}: ${labels[action] ?? action}`}
     >
       <header>
         <Icon size={16} aria-hidden="true" />
-        <strong>{labels[action] ?? 'Using computer'}</strong>
+        <strong>{labels[action] ?? 'Usando o computador'}</strong>
         <span className={failed ? 'tool-state failed' : 'tool-state'}>
           {state}
         </span>
         {onExpand && (
           <button
             type="button"
-            aria-label={`Expand ${dotName} computer`}
+            aria-label={`Expandir computador de ${dotName}`}
             onClick={onExpand}
           >
             <ArrowUpRight size={16} />
@@ -170,7 +170,7 @@ export function ComputerToolCard({
       {error && <p role="alert">{error}</p>}
       {interruption && <p role="status">{interruption}</p>}
       {action === 'exec' && complete && typeof data.stdout === 'string' && (
-        <pre aria-label="Computer terminal output">
+        <pre aria-label="Saída do terminal do computador">
           {data.stdout.slice(0, 4000)}
         </pre>
       )}
@@ -182,18 +182,18 @@ export function ComputerToolCard({
         <div className="inline-computer-preview">
           <div className="inline-computer-caption">
             <span className="live-indicator" />
-            {dotName}’s computer · Current browser view
+            Computador de {dotName} · Visão atual do navegador
           </div>
           {screen && (
             <img
               src={`data:image/png;base64,${screen.base64}`}
-              alt={`Current browser view from ${dotName}'s computer`}
+              alt={`Visão atual do navegador no computador de ${dotName}`}
             />
           )}
           {screenError ? (
             <p role="status">{screenError}</p>
           ) : (
-            !screen && <p role="status">Connecting to computer…</p>
+            !screen && <p role="status">Conectando ao computador…</p>
           )}
           {screen && <div className="inline-computer-url">{screen.url}</div>}
         </div>

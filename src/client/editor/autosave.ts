@@ -78,7 +78,7 @@ export class PageAutosave {
         remote: page,
         status: 'conflict',
         error:
-          'This page changed elsewhere. Your draft is safe. Copy it before loading the latest version.',
+          'Esta página foi alterada em outro lugar. Seu rascunho está seguro. Copie-o antes de carregar a versão mais recente.',
       });
     } else
       this.publish({
@@ -135,7 +135,7 @@ export class PageAutosave {
       this.publish({
         status: 'error',
         error:
-          'Use a title up to 160 characters and a document up to 100,000 characters. Your draft is still here.',
+          'Use um título de até 160 caracteres e um documento de até 100.000 caracteres. Seu rascunho continua aqui.',
       });
       return false;
     }
@@ -156,7 +156,7 @@ export class PageAutosave {
               controller.abort();
               reject(
                 new Error(
-                  'Saving timed out. Your draft is safe; retry when connected.',
+                  'O salvamento expirou. Seu rascunho está seguro; tente de novo quando estiver conectado.',
                 ),
               );
             }, 10000);
@@ -182,7 +182,7 @@ export class PageAutosave {
                 : 'saved',
           error:
             remote.revision > result.revision
-              ? 'A newer revision exists. Your draft is preserved.'
+              ? 'Existe uma revisão mais recente. Seu rascunho foi preservado.'
               : undefined,
         });
         return this.state.status !== 'conflict';
@@ -196,10 +196,10 @@ export class PageAutosave {
         this.publish({
           status: conflict ? 'conflict' : 'error',
           error: conflict
-            ? 'This page changed elsewhere. Your draft is safe. Copy it before loading the latest version.'
+            ? 'Esta página foi alterada em outro lugar. Seu rascunho está seguro. Copie-o antes de carregar a versão mais recente.'
             : error instanceof Error
               ? error.message
-              : 'Could not save. Your draft is safe.',
+              : 'Não foi possível salvar. Seu rascunho está seguro.',
         });
         return false;
       } finally {

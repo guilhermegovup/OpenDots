@@ -30,9 +30,9 @@ it('records generic scheduled runs without research wording', async () => {
     expect(detail.task.prompt).toBe(prompt);
     expect(detail.runs[0].result).toEqual(result);
     expect(detail.events.map((event) => event.text)).toEqual([
-      'Task added to the queue.',
-      'Run started.',
-      'Run completed.',
+      'Tarefa adicionada à fila.',
+      'Execução iniciada.',
+      'Execução concluída.',
     ]);
     expect(execute).toHaveBeenCalledOnce();
   } finally {
@@ -103,7 +103,7 @@ it('omits stored memories from research when memory permission is disabled', asy
     );
     expect(store.detail(task.id)?.runs[0].result?.sample).toBe(true);
     expect(store.detail(task.id)?.events.at(-1)?.text).toBe(
-      'Fictional sample brief ready.',
+      'Resumo de exemplo fictício pronto.',
     );
   } finally {
     runner.stop();

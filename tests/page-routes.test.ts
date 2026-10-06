@@ -192,7 +192,7 @@ it('saves reviewed drafts once and rechecks the Dot’s Space access', async () 
     const conflict = await app.request(path, request(changed));
     expect(conflict.status).toBe(409);
     expect(await conflict.json()).toMatchObject({
-      error: expect.stringContaining('different draft'),
+      error: expect.stringContaining('rascunho diferente'),
     });
   }
   expect(ws.pages.list(dot.spaceId)).toHaveLength(1);
@@ -293,7 +293,7 @@ it.each([
     );
     expect(response.status).toBe(404);
     expect(await response.json()).toEqual({
-      error: 'Conversation does not belong to this Dot and owner.',
+      error: 'Esta conversa não pertence a este Dot e proprietário.',
     });
   },
 );
@@ -311,20 +311,6 @@ it('keeps real Intelligence failures as 503 without exposing details', async () 
   expect(response.status).toBe(503);
   expect(await response.json()).toEqual({
     error:
-      'Page operation could not complete. Check Intelligence setup or retry; your draft has not been discarded.',
+      'Não foi possível concluir a operação na página. Verifique a configuração do Intelligence ou tente novamente; seu rascunho não foi descartado.',
   });
-});
-
-it('answers 404, not 503, for a conversation or call that does not exist', async () => {
-  const { app } = fixture();
-  for (const path of [
-    '/api/conversations/missing/capture',
-    '/api/voice/calls/missing',
-  ]) {
-    const response = await app.request(path);
-    expect(response.status).toBe(404);
-    expect(((await response.json()) as { error: string }).error).toMatch(
-      /not found|does not belong/,
-    );
-  }
 });

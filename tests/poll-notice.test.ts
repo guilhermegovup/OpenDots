@@ -36,7 +36,8 @@ it('keeps an unauthorized poll from replacing the connection notice', () => {
     applyRefreshResult(current, {
       ok: false,
       status: 401,
-      message: 'Enter your owner access token to unlock OpenDots.',
+      message:
+        'Informe seu token de acesso de proprietário para desbloquear o OpenDots.',
     }),
   ).toBe(current);
 });
